@@ -1,0 +1,195 @@
+<!DOCTYPE html><html><head><base href="https://pos.simplydelicious.com/">
+<title>Simply Delicious POS</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f0f0f0;
+  }
+  .container {
+    display: flex;
+    justify-content: space-between;
+  }
+  .menu, .basket, .payment {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .menu {
+    width: 40%;
+  }
+  .basket {
+    width: 30%;
+  }
+  .payment {
+    width: 25%;
+  }
+  h2 {
+    color: #333;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+  }
+  button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  button:hover {
+    background-color: #45a049;
+  }
+  .remove {
+    background-color: #f44336;
+  }
+  .remove:hover {
+    background-color: #da190b;
+  }
+  .payment-btn {
+    background-color: #008CBA;
+  }
+  .payment-btn:hover {
+    background-color: #007B9A;
+  }
+  #transaction-log {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #e9e9e9;
+    border-radius: 4px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="menu">
+    <h2>Menu</h2>
+    <h3>Main Dishes</h3>
+    <button onclick="addToBasket('Grilled Chicken', 12.99)">Grilled Chicken - $12.99</button>
+    <button onclick="addToBasket('Veggie Burger', 10.99)">Veggie Burger - $10.99</button>
+    <button onclick="addToBasket('Fish Tacos', 11.99)">Fish Tacos - $11.99</button>
+    
+    <h3>Side Dishes</h3>
+    <button onclick="addToBasket('French Fries', 3.99)">French Fries - $3.99</button>
+    <button onclick="addToBasket('Caesar Salad', 4.99)">Caesar Salad - $4.99</button>
+    
+    <h3>Drinks</h3>
+    <button onclick="addToBasket('Soda', 1.99)">Soda - $1.99</button>
+    <button onclick="addToBasket('Iced Tea', 2.49)">Iced Tea - $2.49</button>
+    <button onclick="addToBasket('Lemonade', 2.49)">Lemonade - $2.49</button>
+    
+    <h3>Desserts</h3>
+    <button onclick="addToBasket('Chocolate Cake', 5.99)">Chocolate Cake - $5.99</button>
+    <button onclick="addToBasket('Apple Pie', 4.99)">Apple Pie - $4.99</button>
+  </div>
+  
+  <div class="basket">
+    <h2>Basket</h2>
+    <div id="basket-items"></div>
+    <p>Total: $<span id="total">0.00</span></p>
+  </div>
+  
+  <div class="payment">
+  <h2 style="font-size: 24px;">Payment</h2>
+  <p style="font-size: 20px;">Amount Due: CHF <span id="amount-due">0.00</span></p>
+  <p style="font-size: 20px;">Amount Received: CHF <input type="number" id="amount-received" min="0" max="999" step="1" style="font-size: 20px; width: 80px;"></p>
+  <p style="font-size: 20px;">Change: CHF <span id="change">0.00</span></p>
+  <button onclick="quickAmount(10)" class="payment-btn" style="font-size: 18px;">CHF 10</button>
+  <button onclick="quickAmount(20)" class="payment-btn" style="font-size: 18px;">CHF 20</button>
+  <button onclick="quickAmount(50)" class="payment-btn" style="font-size: 18px;">CHF 50</button>
+  <button onclick="quickAmount(100)" class="payment-btn" style="font-size: 18px;">CHF 100</button>
+  <br><br>
+  <button onclick="processPayment()" class="payment-btn" style="font-size: 20px;">Process Payment</button>
+</div>
+</div>
+
+<div id="transaction-log">
+  <h2>Transaction Log</h2>
+  <div id="log-entries"></div>
+</div>
+
+<script>
+let basket = [];
+let total = 0;
+
+function addToBasket(item, price) {
+  basket.push({item, price});
+  updateBasket();
+}
+
+function removeFromBasket(index) {
+  basket.splice(index, 1);
+  updateBasket();
+}
+
+function updateBasket() {
+  let basketHtml = "";
+  total = 0;
+  for (let i = 0; i < basket.length; i++) {
+    basketHtml += `<p>${basket[i].item} - CHF ${basket[i].price.toFixed(2)} <button class="remove" onclick="removeFromBasket(${i})">Remove</button></p>`;
+    total += basket[i].price;
+  }
+  document.getElementById("basket-items").innerHTML = basketHtml;
+  document.getElementById("total").textContent = total.toFixed(2);
+  document.getElementById("amount-due").textContent = total.toFixed(2);
+}
+
+function quickAmount(amount) {
+  document.getElementById("amount-received").value = amount;
+  calculateChange();
+}
+
+function calculateChange() {
+  let amountReceived = parseInt(document.getElementById("amount-received").value) || 0;
+  let change = amountReceived - total;
+  document.getElementById("change").textContent = change.toFixed(2);
+}
+
+function processPayment() {
+  let amountReceived = parseInt(document.getElementById("amount-received").value) || 0;
+  if (amountReceived < total) {
+    alert("Insufficient payment amount!");
+    return;
+  }
+  
+  let change = amountReceived - total;
+  let transactionDetails = `
+    Date: ${new Date().toLocaleString()}
+    Items:
+    ${basket.map(item => `${item.item} - CHF ${item.price.toFixed(2)}`).join('\n')}
+    
+    Total: CHF ${total.toFixed(2)}
+    Amount Received: CHF ${amountReceived.toFixed(2)}
+    Change: CHF ${change.toFixed(2)}
+  `;
+  
+  // Log the transaction
+  let logEntry = document.createElement("p");
+  logEntry.textContent = `Transaction completed: CHF ${total.toFixed(2)} - ${new Date().toLocaleString()}`;
+  document.getElementById("log-entries").prepend(logEntry);
+  
+  // In a real application, here you would send the transaction details to a server
+  // to be saved in a database or file, and to send an email.
+  console.log("Transaction saved:", transactionDetails);
+  
+  // Clear the basket and reset the form
+  basket = [];
+  updateBasket();
+  document.getElementById("amount-received").value = "";
+  document.getElementById("change").textContent = "0.00";
+  
+  alert("Payment processed successfully! Transaction details have been logged.");
+}
+
+document.getElementById("amount-received").addEventListener("input", calculateChange);
+</script>
+</body></html>
