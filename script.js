@@ -39,16 +39,15 @@ function updateBasket() {
     total = 0;
     basket.forEach(item => {
         let li = document.createElement('li');
-        li.textContent = `${item.name} x${item.quantity} - ${item.price * item.quantity} CHF`;
-        let removeButton = document.createElement('button');
-        removeButton.textContent = 'Remove';
-        removeButton.addEventListener('click', () => removeFromBasket(item.name));
-        li.appendChild(removeButton);
+        li.innerHTML = `
+            <span>${item.name} x${item.quantity} - ${(item.price * item.quantity).toFixed(2)} CHF</span>
+            <button class="remove-item" data-name="${item.name}">X</button>
+        `;
         basketElement.appendChild(li);
         total += item.price * item.quantity;
     });
-    document.getElementById('total').textContent = total;
-    document.getElementById('total-to-pay').textContent = total;
+    document.getElementById('total').textContent = total.toFixed(2);
+    document.getElementById('total-to-pay').textContent = total.toFixed(2);
     updateChangeAmount();
 }
 
@@ -56,7 +55,7 @@ function updateBasket() {
 function updateChangeAmount() {
     let paymentAmount = parseFloat(document.getElementById('custom-amount').value) || 0;
     let changeAmount = paymentAmount - total;
-    document.getElementById('change-amount').textContent = changeAmount > 0 ? changeAmount.toFixed(2) : '0';
+    document.getElementById('change-amount').textContent = changeAmount > 0 ? changeAmount.toFixed(2) : '0.00';
 }
 
 // Function to handle payment
@@ -73,13 +72,13 @@ function handlePayment(amount) {
             paid: amount,
             date: new Date().toISOString()
         };
-        logTransactionToIFTTT(transaction); // Add this line to send the transaction to IFTTT
+        logTransactionToIFTTT(transaction);
         // Reset the basket
         basket = [];
         updateBasket();
         // Reset the custom amount input
         document.getElementById('custom-amount').value = '';
-        updateChangeAmount();
+        alert(`Payment successful. Change: ${change.toFixed(2)} CHF`);
     } else {
         alert('Montant insuffisant!');
     }
@@ -142,6 +141,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
             alert('Veuillez entrer un montant valide');
         } else {
             handlePayment(amount);
+        }
+    });
+
+    // Add event listener for remove buttons (using event delegation)
+    document.getElementById('basket-items').addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-item')) {
+            let name = e.target.getAttribute('data-name');
+            removeFromBasket(name);
         }
     });
 });
