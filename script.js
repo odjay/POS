@@ -17,6 +17,20 @@ function addToBasket(name, price) {
     updateBasket();
 }
 
+// Function to remove item from basket
+function removeFromBasket(name) {
+    console.log(`Removing from basket: ${name}`);
+    let itemIndex = basket.findIndex(i => i.name === name);
+    if (itemIndex !== -1) {
+        basket[itemIndex].quantity--;
+        if (basket[itemIndex].quantity === 0) {
+            basket.splice(itemIndex, 1);
+        }
+    }
+    console.log("Basket after removing item:", basket);
+    updateBasket();
+}
+
 // Function to update the basket display
 function updateBasket() {
     console.log("Updating basket");
@@ -26,6 +40,10 @@ function updateBasket() {
     basket.forEach(item => {
         let li = document.createElement('li');
         li.textContent = `${item.name} x${item.quantity} - ${item.price * item.quantity} CHF`;
+        let removeButton = document.createElement('button');
+        removeButton.textContent = 'Remove';
+        removeButton.addEventListener('click', () => removeFromBasket(item.name));
+        li.appendChild(removeButton);
         basketElement.appendChild(li);
         total += item.price * item.quantity;
     });
@@ -52,20 +70,23 @@ function handlePayment(amount) {
         let transaction = {
             items: basket,
             total: total,
+            paid: amount,
             date: new Date().toISOString()
         };
-        logTransactionToIFTTT(total); // Add this line to send the total amount to IFTTT
+        logTransactionToIFTTT(transaction); // Add this line to send the transaction to IFTTT
         // Reset the basket
         basket = [];
         updateBasket();
-        // Do not reset the custom amount input here
+        // Reset the custom amount input
+        document.getElementById('custom-amount').value = '';
+        updateChangeAmount();
     } else {
         alert('Montant insuffisant!');
     }
 }
 
 // Function to log transaction to IFTTT
-async function logTransactionToIFTTT(totalAmount) {
+async function logTransactionToIFTTT(transaction) {
     const event = 'POS'; // Replace with your IFTTT event name
     const key = 'x5Jhxl9evk6SPmKe8rW5S'; // Replace with your IFTTT Webhook key
 
@@ -75,9 +96,9 @@ async function logTransactionToIFTTT(totalAmount) {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            value1: totalAmount.toFixed(2),
-            value2: new Date().toISOString(),
-            value3: 'CHF'
+            value1: JSON.stringify(transaction.items),
+            value2: transaction.total.toFixed(2),
+            value3: transaction.paid.toFixed(2)
         })
     });
 
