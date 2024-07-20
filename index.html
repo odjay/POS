@@ -4,95 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Food Truck POS</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-        }
-
-        #pos-container {
-            display: flex;
-            justify-content: space-between;
-            padding: 20px;
-            gap: 20px; /* Space between sections */
-            flex-wrap: wrap; /* Allow wrapping to the next line if not enough space */
-        }
-
-        #menu, #basket, #payment {
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-
-        #menu {
-            flex: 2; /* Take up more space */
-            min-width: 300px; /* Minimum width for the menu */
-        }
-
-        #basket, #payment {
-            flex: 1; /* Take up less space */
-            min-width: 250px; /* Minimum width for basket and payment */
-        }
-
-        .menu-section {
-            margin-bottom: 20px;
-        }
-
-        button {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            margin-bottom: 10px;
-            font-size: 18px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        input[type="number"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            font-size: 18px;
-        }
-
-        #basket-items {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        #basket-items li {
-            margin-bottom: 5px;
-        }
-
-        #total-to-pay, #change-amount {
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-
-        #change-amount {
-            color: #4CAF50;
-        }
-
-        @media (max-width: 768px) {
-            #pos-container {
-                flex-direction: column;
-            }
-            
-            #menu, #basket, #payment {
-                max-width: 100%;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to external CSS file -->
 </head>
 <body>
     <div id="pos-container">
@@ -139,43 +51,6 @@
             <button id="pay-custom">Payer</button>
         </div>
     </div>
-    <script>
-        console.log("Script loaded");
-
-        // Initialize the basket and total
-        let basket = [];
-        let total = 0;
-
-        // Function to add item to basket
-        function addToBasket(name, price) {
-            console.log(`Adding to basket: ${name} - ${price} CHF`);
-            let item = basket.find(i => i.name === name);
-            if (item) {
-                item.quantity++;
-            } else {
-                basket.push({name: name, price: price, quantity: 1});
-            }
-            console.log("Basket after adding item:", basket);
-            updateBasket();
-        }
-
-        // Function to update the basket display
-        function updateBasket() {
-            console.log("Updating basket");
-            let basketElement = document.getElementById('basket-items');
-            basketElement.innerHTML = '';
-            total = 0;
-            basket.forEach(item => {
-                let li = document.createElement('li');
-                li.textContent = `${item.name} x${item.quantity} - ${item.price * item.quantity} CHF`;
-                basketElement.appendChild(li);
-                total += item.price * item.quantity;
-            });
-            document.getElementById('total').textContent = total;
-            document.getElementById('total-to-pay').textContent = total;
-            updateChangeAmount();
-        }
-
-        // Function to update change amount
-        function updateChangeAmount() {
-            let paymentAmount = parseFloat(document.getElementById('custom-amount').value) || 0;
+    <script src="script.js"></script> <!-- Link to external JavaScript file -->
+</body>
+</html>
