@@ -129,26 +129,3 @@ async function logTransactionToIFTTT(totalAmount) {
         console.error('Failed to log transaction to IFTTT');
     }
 }
-
-// Modify your existing handlePayment function like this
-function handlePayment(amount) {
-    console.log(`Handling payment: ${amount} CHF`);
-    if (amount >= total) {
-        let change = amount - total;
-        // Log the transaction
-        let transaction = {
-            items: basket,
-            total: total,
-            date: new Date().toISOString()
-        };
-        logTransactionToIFTTT(total); // Add this line to send the total amount to IFTTT
-        // Reset the basket
-        basket = [];
-        updateBasket();
-        // Reset the custom amount input
-        document.getElementById('custom-amount').value = '';
-        updateChangeAmount();
-    } else {
-        alert('Montant insuffisant!');
-    }
-}
