@@ -50,7 +50,7 @@ function handlePayment(amount) {
         // Reset the basket
         basket = [];
         updateBasket();
-        alert(`Paiement effectué avec succès! Change: ${change.toFixed(2)} CHF`);
+        // Reset the custom amount input
         document.getElementById('custom-amount').value = '';
         updateChangeAmount();
     } else {
@@ -88,6 +88,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             let amount = parseFloat(this.getAttribute('data-amount'));
             document.getElementById('custom-amount').value = amount;
             updateChangeAmount();
+            handlePayment(amount); // Automatically handle payment without confirmation
         });
     });
 
