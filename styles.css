@@ -62,3 +62,12 @@ input[type="number"] {
 #basket-items li {
     margin-bottom: 5px;
 }
+
+#total-to-pay, #change-amount {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+#change-amount {
+    color: #4CAF50;
+}
