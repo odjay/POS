@@ -13,13 +13,6 @@ body {
     flex-wrap: wrap; /* Allow wrapping to the next line if not enough space */
 }
 
-#menu, #basket, #payment {
-    background-color: white;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
 #menu {
     flex: 2; /* Take up more space */
     min-width: 300px; /* Minimum width for the menu */
@@ -74,14 +67,4 @@ input[type="number"] {
 
 #change-amount {
     color: #4CAF50;
-}
-
-@media (max-width: 768px) {
-    #pos-container {
-        flex-direction: column;
-    }
-    
-    #menu, #basket, #payment {
-        max-width: 100%;
-    }
 }
