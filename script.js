@@ -53,3 +53,102 @@ function updateBasket() {
 
 // Function to update change amount
 function updateChangeAmount() {
+    let paymentAmount = parseFloat(document.getElementById('custom-amount').value) || 0;
+    let changeAmount = paymentAmount - total;
+    document.getElementById('change-amount').textContent = changeAmount >= 0 ? changeAmount.toFixed(2) : '0.00';
+}
+
+// Function to handle payment
+function handlePayment() {
+    let amount = parseFloat(document.getElementById('custom-amount').value);
+    if (isNaN(amount)) {
+        alert('Veuillez entrer un montant valide');
+        return;
+    }
+    console.log(`Handling payment: ${amount} CHF`);
+    if (amount >= total) {
+        let change = amount - total;
+        console.log(`Change to be returned: ${change} CHF`);
+        document.getElementById('change-amount').textContent = change.toFixed(2);
+        // Log the transaction
+        let transaction = {
+            items: basket.map(item => `${item.name} x${item.quantity}`).join(', '),
+            total: total.toFixed(2),
+            paid: amount.toFixed(2),
+            change: change.toFixed(2),
+            date: new Date().toISOString()
+        };
+        logTransactionToIFTTT(transaction);
+        // Reset the basket
+        basket = [];
+        updateBasket();
+        // Reset the custom amount input
+        document.getElementById('custom-amount').value = '';
+        alert(`Payment successful. Change: ${change.toFixed(2)} CHF`);
+    } else {
+        alert('Montant insuffisant!');
+    }
+}
+
+// Function to log transaction to IFTTT
+async function logTransactionToIFTTT(transaction) {
+    const event = 'POS'; // Replace with your IFTTT event name
+    const key = 'x5Jhxl9evk6SPmKe8rW5S'; // Replace with your IFTTT Webhook key
+
+    const response = await fetch(`https://maker.ifttt.com/trigger/${event}/with/key/${key}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            value1: `Items: ${transaction.items}`,
+            value2: `Total: ${transaction.total} CHF, Paid: ${transaction.paid} CHF, Change: ${transaction.change} CHF`,
+            value3: transaction.date
+        })
+    });
+
+    if (response.ok) {
+        console.log('Transaction logged to IFTTT');
+    } else {
+        console.error('Failed to log transaction to IFTTT');
+    }
+}
+
+// Add event listeners when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', (event) => {
+    console.log("DOM fully loaded and parsed");
+
+    // Add event listeners to menu items
+    document.querySelectorAll('.menu-item').forEach(button => {
+        button.addEventListener('click', function() {
+            let name = this.getAttribute('data-name');
+            let price = parseFloat(this.getAttribute('data-price'));
+            addToBasket(name, price);
+        });
+    });
+
+    // Add event listeners to payment buttons
+    document.querySelectorAll('.pay-button').forEach(button => {
+        button.addEventListener('click', function() {
+            let amount = parseFloat(this.getAttribute('data-amount'));
+            document.getElementById('custom-amount').value = amount;
+            updateChangeAmount();
+        });
+    });
+
+    // Add event listener to custom amount input
+    document.getElementById('custom-amount').addEventListener('input', updateChangeAmount);
+
+    // Add event listener to custom payment button
+    document.getElementById('pay-custom').addEventListener('click', handlePayment);
+
+    // Add event listener for remove buttons (using event delegation)
+    document.getElementById('basket-items').addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-item')) {
+            let name = e.target.getAttribute('data-name');
+            removeFromBasket(name);
+        }
+    });
+});
+
+console.log("Script execution completed");
