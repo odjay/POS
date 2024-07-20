@@ -7,40 +7,39 @@ body {
 
 #pos-container {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: space-between;
     padding: 20px;
+    gap: 20px; /* Space between sections */
+    flex-wrap: wrap; /* Allow wrapping to the next line if not enough space */
 }
 
-.section {
+#menu, #basket, #payment {
     background-color: white;
-    border: 2px solid #000; /* Debug border */
     border-radius: 10px;
     padding: 20px;
-    margin: 10px;
-    min-width: 250px;
-    flex: 1;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
 #menu {
-    flex: 2;
-    background-color: #ffeeee; /* Debug color */
+    flex: 2; /* Take up more space */
+    min-width: 300px; /* Minimum width for the menu */
 }
 
-#basket {
-    background-color: #eeffee; /* Debug color */
+#basket, #payment {
+    flex: 1; /* Take up less space */
+    min-width: 250px; /* Minimum width for basket and payment */
 }
 
-#payment {
-    background-color: #eeeeff; /* Debug color */
+.menu-section {
+    margin-bottom: 20px;
 }
 
 button {
     display: block;
     width: 100%;
-    padding: 10px;
+    padding: 15px;
     margin-bottom: 10px;
-    font-size: 16px;
+    font-size: 18px;
     background-color: #4CAF50;
     color: white;
     border: none;
@@ -56,7 +55,7 @@ input[type="number"] {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
-    font-size: 16px;
+    font-size: 18px;
 }
 
 #basket-items {
@@ -78,7 +77,11 @@ input[type="number"] {
 }
 
 @media (max-width: 768px) {
-    .section {
-        flex-basis: 100%;
+    #pos-container {
+        flex-direction: column;
+    }
+    
+    #menu, #basket, #payment {
+        max-width: 100%;
     }
 }
