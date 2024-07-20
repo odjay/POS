@@ -152,5 +152,3 @@ function handlePayment(amount) {
         alert('Montant insuffisant!');
     }
 }
-
-console.log("Script execution completed");
