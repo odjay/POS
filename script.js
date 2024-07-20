@@ -107,4 +107,27 @@ document.addEventListener('DOMContentLoaded', (event) => {
     });
 });
 
+async function logTransactionToIFTTT(transaction) {
+  const event = 'new_transaction';
+  const key = 'YOUR_IFTTT_WEBHOOK_KEY';
+  
+  const response = await fetch(`https://maker.ifttt.com/trigger/${event}/with/key/${key}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      value1: JSON.stringify(transaction.items),
+      value2: transaction.total,
+      value3: transaction.date
+    })
+  });
+
+  if (response.ok) {
+    console.log('Transaction logged to IFTTT');
+  } else {
+    console.error('Failed to log transaction to IFTTT');
+  }
+}
+
 console.log("Script execution completed");
