@@ -65,8 +65,8 @@ function handlePayment(amount) {
 
 // Function to log transaction to IFTTT
 async function logTransactionToIFTTT(transaction) {
-    const event = 'new_transaction'; // Replace with your IFTTT event name
-    const key = 'YOUR_IFTTT_WEBHOOK_KEY'; // Replace with your IFTTT Webhook key
+    const event = 'POS'; // Replace with your IFTTT event name
+    const key = 'x5Jhxl9evk6SPmKe8rW5S'; // Replace with your IFTTT Webhook key
 
     const response = await fetch(`https://maker.ifttt.com/trigger/${event}/with/key/${key}`, {
         method: 'POST',
