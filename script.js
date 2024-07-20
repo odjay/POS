@@ -13,6 +13,7 @@ function addToBasket(name, price) {
     } else {
         basket.push({name: name, price: price, quantity: 1});
     }
+    console.log("Basket after adding item:", basket);
     updateBasket();
 }
 
@@ -46,7 +47,12 @@ function handlePayment(amount) {
     if (amount >= total) {
         let change = amount - total;
         // Log the transaction
-        logTransaction();
+        let transaction = {
+            items: basket,
+            total: total,
+            date: new Date().toISOString()
+        };
+        logTransactionToIFTTT(total); // Add this line to send the total amount to IFTTT
         // Reset the basket
         basket = [];
         updateBasket();
@@ -58,15 +64,28 @@ function handlePayment(amount) {
     }
 }
 
-// Function to log the transaction
-function logTransaction() {
-    let transaction = {
-        items: basket,
-        total: total,
-        date: new Date().toISOString()
-    };
-    // Here you would typically send this data to a server
-    console.log('Transaction logged:', transaction);
+// Function to log transaction to IFTTT
+async function logTransactionToIFTTT(totalAmount) {
+    const event = 'POS'; // Replace with your IFTTT event name
+    const key = 'x5Jhxl9evk6SPmKe8rW5S'; // Replace with your IFTTT Webhook key
+
+    const response = await fetch(`https://maker.ifttt.com/trigger/${event}/with/key/${key}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            value1: totalAmount.toFixed(2),
+            value2: new Date().toISOString(),
+            value3: 'CHF'
+        })
+    });
+
+    if (response.ok) {
+        console.log('Transaction logged to IFTTT');
+    } else {
+        console.error('Failed to log transaction to IFTTT');
+    }
 }
 
 // Add event listeners when the DOM is fully loaded
@@ -106,26 +125,4 @@ document.addEventListener('DOMContentLoaded', (event) => {
     });
 });
 
-// Add this function to your script
-async function logTransactionToIFTTT(totalAmount) {
-    const event = 'POS'; // Replace with your IFTTT event name
-    const key = 'x5Jhxl9evk6SPmKe8rW5S'; // Replace with your IFTTT Webhook key
-
-    const response = await fetch(`https://maker.ifttt.com/trigger/${event}/with/key/${key}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            value1: totalAmount.toFixed(2),
-            value2: new Date().toISOString(),
-            value3: 'CHF'
-        })
-    });
-
-    if (response.ok) {
-        console.log('Transaction logged to IFTTT');
-    } else {
-        console.error('Failed to log transaction to IFTTT');
-    }
-}
+console.log("Script execution completed");
