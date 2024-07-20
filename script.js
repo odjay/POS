@@ -93,4 +93,80 @@ function handlePayment() {
 // Function to log transaction to IFTTT
 async function logTransactionToIFTTT(transaction) {
     const event = 'POS'; // Replace with your IFTTT event name
-    const key = 'x
+    const key = 'x5Jhxl9evk6SPmKe8rW5S'; // Replace with your IFTTT Webhook key
+
+    const jsonPayload = JSON.stringify({
+        items: transaction.items,
+        total: transaction.total,
+        paid: transaction.paid,
+        change: transaction.change,
+        date: transaction.date
+    });
+
+    const payload = {
+        value1: jsonPayload
+    };
+
+    console.log('Sending to IFTTT:', payload);
+
+    try {
+        const response = await fetch(`https://maker.ifttt.com/trigger/${event}/with/key/${key}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+            const responseText = await response.text();
+            console.log('IFTTT Response:', responseText);
+            console.log('Transaction logged to IFTTT successfully');
+        } else {
+            console.error('Failed to log transaction to IFTTT. Status:', response.status);
+            const errorText = await response.text();
+            console.error('Error details:', errorText);
+        }
+    } catch (error) {
+        console.error('Error sending request to IFTTT:', error);
+    }
+}
+
+// Add event listeners when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', (event) => {
+    console.log("DOM fully loaded and parsed");
+
+    // Add event listeners to menu items
+    document.querySelectorAll('.menu-item').forEach(button => {
+        button.addEventListener('click', function() {
+            let name = this.getAttribute('data-name');
+            let price = parseFloat(this.getAttribute('data-price'));
+            addToBasket(name, price);
+        });
+    });
+
+    // Add event listeners to payment buttons
+    document.querySelectorAll('.pay-button').forEach(button => {
+        button.addEventListener('click', function() {
+            let amount = parseFloat(this.getAttribute('data-amount'));
+            document.getElementById('custom-amount').value = amount;
+            updateChangeAmount();
+        });
+    });
+
+    // Add event listener to custom amount input
+    document.getElementById('custom-amount').addEventListener('input', updateChangeAmount);
+
+    // Add event listener to custom payment button
+    document.getElementById('pay-custom').addEventListener('click', handlePayment);
+
+    // Add event listener for remove buttons (using event delegation)
+    document.getElementById('basket-items').addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-item')) {
+            let name = e.target.getAttribute('data-name');
+            removeFromBasket(name);
+        }
+    });
+});
+
+console.log("Script execution completed");
