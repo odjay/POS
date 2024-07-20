@@ -58,9 +58,7 @@ function handlePayment(amount) {
         // Reset the basket
         basket = [];
         updateBasket();
-        // Reset the custom amount input
-        document.getElementById('custom-amount').value = '';
-        updateChangeAmount();
+        // Do not reset the custom amount input here
     } else {
         alert('Montant insuffisant!');
     }
@@ -109,7 +107,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             let amount = parseFloat(this.getAttribute('data-amount'));
             document.getElementById('custom-amount').value = amount;
             updateChangeAmount();
-            handlePayment(amount); // Automatically handle payment without confirmation
+            handlePayment(amount);
         });
     });
 
