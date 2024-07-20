@@ -106,4 +106,51 @@ document.addEventListener('DOMContentLoaded', (event) => {
     });
 });
 
+// Add this function to your script
+async function logTransactionToIFTTT(totalAmount) {
+    const event = 'POS'; // Replace with your IFTTT event name
+    const key = 'x5Jhxl9evk6SPmKe8rW5S'; // Replace with your IFTTT Webhook key
+
+    const response = await fetch(`https://maker.ifttt.com/trigger/${event}/with/key/${key}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            value1: totalAmount.toFixed(2),
+            value2: new Date().toISOString(),
+            value3: 'CHF'
+        })
+    });
+
+    if (response.ok) {
+        console.log('Transaction logged to IFTTT');
+    } else {
+        console.error('Failed to log transaction to IFTTT');
+    }
+}
+
+// Modify your existing handlePayment function like this
+function handlePayment(amount) {
+    console.log(`Handling payment: ${amount} CHF`);
+    if (amount >= total) {
+        let change = amount - total;
+        // Log the transaction
+        let transaction = {
+            items: basket,
+            total: total,
+            date: new Date().toISOString()
+        };
+        logTransactionToIFTTT(total); // Add this line to send the total amount to IFTTT
+        // Reset the basket
+        basket = [];
+        updateBasket();
+        // Reset the custom amount input
+        document.getElementById('custom-amount').value = '';
+        updateChangeAmount();
+    } else {
+        alert('Montant insuffisant!');
+    }
+}
+
 console.log("Script execution completed");
