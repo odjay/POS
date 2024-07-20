@@ -65,6 +65,23 @@ input[type="number"] {
 
 #basket-items li {
     margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#basket-items li button {
+    background-color: #f44336;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    margin-left: 10px;
+    padding: 5px 10px;
+}
+
+#basket-items li button:hover {
+    background-color: #e53935;
 }
 
 #total-to-pay, #change-amount {
