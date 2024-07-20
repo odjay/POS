@@ -90,4 +90,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
     });
 });
 
+#total-to-pay, #change-amount {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+#change-amount {
+    color: #4CAF50;
+}
+
 console.log("Script execution completed");
