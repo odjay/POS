@@ -46,16 +46,11 @@ function handlePayment(amount) {
     if (amount >= total) {
         let change = amount - total;
         // Log the transaction
-        let transaction = {
-            items: basket,
-            total: total,
-            date: new Date().toISOString()
-        };
-        logTransactionToIFTTT(transaction); // Call the IFTTT logging function
+        logTransaction();
         // Reset the basket
         basket = [];
         updateBasket();
-        // Reset the custom amount input
+        alert(`Paiement effectué avec succès! Change: ${change.toFixed(2)} CHF`);
         document.getElementById('custom-amount').value = '';
         updateChangeAmount();
     } else {
@@ -63,28 +58,15 @@ function handlePayment(amount) {
     }
 }
 
-// Function to log transaction to IFTTT
-async function logTransactionToIFTTT(transaction) {
-    const event = 'POS'; // Replace with your IFTTT event name
-    const key = 'x5Jhxl9evk6SPmKe8rW5S'; // Replace with your IFTTT Webhook key
-
-    const response = await fetch(`https://maker.ifttt.com/trigger/${event}/with/key/${key}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            value1: JSON.stringify(transaction.items),
-            value2: transaction.total,
-            value3: transaction.date
-        })
-    });
-
-    if (response.ok) {
-        console.log('Transaction logged to IFTTT');
-    } else {
-        console.error('Failed to log transaction to IFTTT');
-    }
+// Function to log the transaction
+function logTransaction() {
+    let transaction = {
+        items: basket,
+        total: total,
+        date: new Date().toISOString()
+    };
+    // Here you would typically send this data to a server
+    console.log('Transaction logged:', transaction);
 }
 
 // Add event listeners when the DOM is fully loaded
@@ -106,7 +88,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
             let amount = parseFloat(this.getAttribute('data-amount'));
             document.getElementById('custom-amount').value = amount;
             updateChangeAmount();
-            handlePayment(amount); // Automatically handle payment without confirmation
         });
     });
 
