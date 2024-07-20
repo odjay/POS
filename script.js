@@ -29,6 +29,15 @@ function updateBasket() {
         total += item.price * item.quantity;
     });
     document.getElementById('total').textContent = total;
+    document.getElementById('total-to-pay').textContent = total;
+    updateChangeAmount();
+}
+
+// Function to update change amount
+function updateChangeAmount() {
+    let paymentAmount = parseFloat(document.getElementById('custom-amount').value) || 0;
+    let changeAmount = paymentAmount - total;
+    document.getElementById('change-amount').textContent = changeAmount > 0 ? changeAmount.toFixed(2) : '0';
 }
 
 // Function to handle payment
@@ -41,7 +50,9 @@ function handlePayment(amount) {
         // Reset the basket
         basket = [];
         updateBasket();
-        alert(`Paiement effectué avec succès! Change: ${change} CHF`);
+        alert(`Paiement effectué avec succès! Change: ${change.toFixed(2)} CHF`);
+        document.getElementById('custom-amount').value = '';
+        updateChangeAmount();
     } else {
         alert('Montant insuffisant!');
     }
@@ -75,9 +86,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
     document.querySelectorAll('.pay-button').forEach(button => {
         button.addEventListener('click', function() {
             let amount = parseFloat(this.getAttribute('data-amount'));
-            handlePayment(amount);
+            document.getElementById('custom-amount').value = amount;
+            updateChangeAmount();
         });
     });
+
+    // Add event listener to custom amount input
+    document.getElementById('custom-amount').addEventListener('input', updateChangeAmount);
 
     // Add event listener to custom payment button
     document.getElementById('pay-custom').addEventListener('click', function() {
@@ -89,14 +104,5 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
     });
 });
-
-#total-to-pay, #change-amount {
-    font-weight: bold;
-    font-size: 1.2em;
-}
-
-#change-amount {
-    color: #4CAF50;
-}
 
 console.log("Script execution completed");
