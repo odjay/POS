@@ -46,6 +46,8 @@ function handlePayment(amount) {
     console.log(`Handling payment: ${amount} CHF`);
     if (amount >= total) {
         let change = amount - total;
+        console.log(`Change to be returned: ${change} CHF`);
+        document.getElementById('change-amount').textContent = change.toFixed(2);
         // Log the transaction
         let transaction = {
             items: basket,
