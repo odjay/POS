@@ -100,8 +100,8 @@ async function logTransactionToIFTTT(transaction) {
 
     const payload = {
         value1: transaction.items,
-        value2: transaction.total,
-        value3: transaction.date
+        value2: `Total: ${transaction.total} CHF, Paid: ${transaction.paid} CHF, Change: ${transaction.change} CHF`,
+        value3: `Date: ${transaction.date}`
     };
 
     console.log('Sending to IFTTT:', payload);
