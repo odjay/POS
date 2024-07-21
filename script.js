@@ -91,7 +91,9 @@ function handlePayment() {
 // Function to log transaction to IFTTT using JSONP
 function logTransactionToIFTTT(transaction) {
     const event = 'POS';
-    const key = 'x5Jhxl9evk6SPmKe8rW5S'; // Replace with your IFTTT Webhook key
+
+// Put the key from IFFTTT https://maker.ifttt.com/trigger/POS/json/with/key/
+    const key = ''; // Replace with your IFTTT Webhook key
     const payload = {
         value1: transaction.items,
         value2: `Total: ${transaction.total} CHF`, // Only send total
