@@ -79,8 +79,11 @@ function handlePayment() {
             date: new Date().toISOString()
         };
 
-         // Show popup with value1, value2, and value3
-        alert(`Value1: ${transaction.items}\nValue2: Total: ${transaction.total} CHF, Paid: ${transaction.paid} CHF, Change: ${transaction.change} CHF\nValue3: ${transaction.date}`);
+        // Show popup with value1, value2, and value3
+        let value1 = transaction.items;
+        let value2 = `Total: ${transaction.total} CHF, Paid: ${transaction.paid} CHF, Change: ${transaction.change} CHF`;
+        let value3 = transaction.date;
+        alert(`Value1: ${value1}\nValue2: ${value2}\nValue3: ${value3}`);
 
         logTransactionToIFTTT(transaction);
         // Reset the basket
@@ -96,7 +99,7 @@ function handlePayment() {
 
 // Function to log transaction to IFTTT
 async function logTransactionToIFTTT(transaction) {
-    const event = 'POS'; // Replace with your IFTTT event name
+    const event = 'POS_transaction'; // Ensure this matches your IFTTT applet event name
     const key = 'x5Jhxl9evk6SPmKe8rW5S'; // Replace with your IFTTT Webhook key
 
     const jsonPayload = JSON.stringify({
