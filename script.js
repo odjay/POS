@@ -79,6 +79,7 @@ function handlePayment() {
             change: change.toFixed(2),
             date: new Date().toISOString()
         };
+        console.log("Transaction data:", transaction);
         logTransactionToIFTTT(transaction);
 
         // Reset the basket
