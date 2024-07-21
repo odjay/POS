@@ -70,19 +70,16 @@ function handlePayment() {
         let change = amount - total;
         console.log(`Change to be returned: ${change} CHF`);
         document.getElementById('change-amount').textContent = change.toFixed(2);
-        
         // Log the transaction
         let transaction = {
             items: basket.map(item => `${item.name} x${item.quantity}`).join(', '),
-            total: total.toFixed(2), // Only send total
+            total: total.toFixed(2),
             date: new Date().toISOString()
         };
         logTransactionToIFTTT(transaction);
-        
         // Reset the basket
         basket = [];
         updateBasket();
-        
         // Reset the custom amount input
         document.getElementById('custom-amount').value = '';
         alert(`Payment successful. Change: ${change.toFixed(2)} CHF`);
