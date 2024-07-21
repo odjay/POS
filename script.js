@@ -11,7 +11,7 @@ function addToBasket(name, price) {
     if (item) {
         item.quantity++;
     } else {
-        basket.push({name: name, price: price, quantity: 1});
+        basket.push({ name: name, price: price, quantity: 1 });
     }
     console.log("Basket after adding item:", basket);
     updateBasket();
@@ -70,18 +70,19 @@ function handlePayment() {
         let change = amount - total;
         console.log(`Change to be returned: ${change} CHF`);
         document.getElementById('change-amount').textContent = change.toFixed(2);
+        
         // Log the transaction
         let transaction = {
             items: basket.map(item => `${item.name} x${item.quantity}`).join(', '),
-            total: total.toFixed(2),
-            paid: amount.toFixed(2),
-            change: change.toFixed(2),
+            total: total.toFixed(2), // Only send total
             date: new Date().toISOString()
         };
         logTransactionToIFTTT(transaction);
+        
         // Reset the basket
         basket = [];
         updateBasket();
+        
         // Reset the custom amount input
         document.getElementById('custom-amount').value = '';
         alert(`Payment successful. Change: ${change.toFixed(2)} CHF`);
@@ -90,36 +91,27 @@ function handlePayment() {
     }
 }
 
-// Function to log transaction to IFTTT using 'no-cors'
-async function logTransactionToIFTTT(transaction) {
-    console.log("logTransactionToIFTTT function called with:", transaction);
+// Function to log transaction to IFTTT using JSONP
+function logTransactionToIFTTT(transaction) {
     const event = 'POS';
-    const key = 'x5Jhxl9evk6SPmKe8rW5S';
-    const iftttUrl = `https://maker.ifttt.com/trigger/${event}/with/key/${key}`;
-
+    const key = 'x5Jhxl9evk6SPmKe8rW5S'; // Replace with your IFTTT Webhook key
     const payload = {
         value1: transaction.items,
-        value2: `Total: ${transaction.total} CHF, Paid: ${transaction.paid} CHF, Change: ${transaction.change} CHF`,
+        value2: `Total: ${transaction.total} CHF`, // Only send total
         value3: transaction.date
     };
 
-    console.log('Sending to IFTTT:', payload);
+    const jsonpUrl = `https://maker.ifttt.com/trigger/${event}/with/key/${key}?value1=${encodeURIComponent(payload.value1)}&value2=${encodeURIComponent(payload.value2)}&value3=${encodeURIComponent(payload.value3)}&callback=iftttCallback`;
 
-    try {
-        const response = await fetch(iftttUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
-            mode: 'no-cors'
-        });
+    const script = document.createElement('script');
+    script.src = jsonpUrl;
+    document.body.appendChild(script);
+}
 
-        // Note: With 'no-cors', you won't be able to access the response or check the status
-        console.log('Fetch request sent to IFTTT with no-cors mode.');
-    } catch (error) {
-        console.error('Error sending request to IFTTT:', error);
-    }
+// Callback function for IFTTT JSONP
+function iftttCallback(data) {
+    console.log('IFTTT Response:', data);
+    console.log('Transaction logged to IFTTT successfully');
 }
 
 // Add event listeners when the DOM is fully loaded
