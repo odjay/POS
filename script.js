@@ -78,6 +78,10 @@ function handlePayment() {
             change: change.toFixed(2),
             date: new Date().toISOString()
         };
+
+         // Show popup with value1, value2, and value3
+        alert(`Value1: ${transaction.items}\nValue2: Total: ${transaction.total} CHF, Paid: ${transaction.paid} CHF, Change: ${transaction.change} CHF\nValue3: ${transaction.date}`);
+
         logTransactionToIFTTT(transaction);
         // Reset the basket
         basket = [];
