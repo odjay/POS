@@ -90,27 +90,36 @@ function handlePayment() {
     }
 }
 
-// Function to log transaction to IFTTT using JSONP
-function logTransactionToIFTTT(transaction) {
+// Function to log transaction to IFTTT using 'no-cors'
+async function logTransactionToIFTTT(transaction) {
+    console.log("logTransactionToIFTTT function called with:", transaction);
     const event = 'POS';
     const key = 'x5Jhxl9evk6SPmKe8rW5S';
+    const iftttUrl = `https://maker.ifttt.com/trigger/${event}/with/key/${key}`;
+
     const payload = {
         value1: transaction.items,
         value2: `Total: ${transaction.total} CHF, Paid: ${transaction.paid} CHF, Change: ${transaction.change} CHF`,
         value3: transaction.date
     };
 
-    const jsonpUrl = `https://maker.ifttt.com/trigger/${event}/with/key/${key}?value1=${encodeURIComponent(payload.value1)}&value2=${encodeURIComponent(payload.value2)}&value3=${encodeURIComponent(payload.value3)}&callback=iftttCallback`;
+    console.log('Sending to IFTTT:', payload);
 
-    const script = document.createElement('script');
-    script.src = jsonpUrl;
-    document.body.appendChild(script);
-}
+    try {
+        const response = await fetch(iftttUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+            mode: 'no-cors'
+        });
 
-// Callback function for IFTTT JSONP
-function iftttCallback(data) {
-    console.log('IFTTT Response:', data);
-    console.log('Transaction logged to IFTTT successfully');
+        // Note: With 'no-cors', you won't be able to access the response or check the status
+        console.log('Fetch request sent to IFTTT with no-cors mode.');
+    } catch (error) {
+        console.error('Error sending request to IFTTT:', error);
+    }
 }
 
 // Add event listeners when the DOM is fully loaded
