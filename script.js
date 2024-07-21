@@ -90,15 +90,16 @@ function handlePayment() {
     }
 }
 
-// Function to log transaction to IFTTT
 async function logTransactionToIFTTT(transaction) {
     const event = 'POS'; // Replace with your IFTTT event name
     const key = 'x5Jhxl9evk6SPmKe8rW5S'; // Replace with your IFTTT Webhook key
 
     const payload = {
-        value1: transaction.items,
-        value2: `Total: ${transaction.total} CHF, Paid: ${transaction.paid} CHF, Change: ${transaction.change} CHF`,
-        value3: transaction.date
+        items: transaction.items,
+        total: transaction.total,
+        paid: transaction.paid,
+        change: transaction.change,
+        date: transaction.date
     };
 
     console.log('Sending to IFTTT:', payload);
