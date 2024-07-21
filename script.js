@@ -78,13 +78,6 @@ function handlePayment() {
             change: change.toFixed(2),
             date: new Date().toISOString()
         };
-
-        // Show popup with value1, value2, and value3
-        let value1 = transaction.items;
-        let value2 = `Total: ${transaction.total} CHF, Paid: ${transaction.paid} CHF, Change: ${transaction.change} CHF`;
-        let value3 = transaction.date;
-        alert(`Value1: ${value1}\nValue2: ${value2}\nValue3: ${value3}`);
-
         logTransactionToIFTTT(transaction);
         // Reset the basket
         basket = [];
@@ -99,19 +92,13 @@ function handlePayment() {
 
 // Function to log transaction to IFTTT
 async function logTransactionToIFTTT(transaction) {
-    const event = 'POS_transaction'; // Ensure this matches your IFTTT applet event name
+    const event = 'POS'; // Replace with your IFTTT event name
     const key = 'x5Jhxl9evk6SPmKe8rW5S'; // Replace with your IFTTT Webhook key
 
-    const jsonPayload = JSON.stringify({
-        items: transaction.items,
-        total: transaction.total,
-        paid: transaction.paid,
-        change: transaction.change,
-        date: transaction.date
-    });
-
     const payload = {
-        value1: jsonPayload
+        value1: transaction.items,
+        value2: `Total: ${transaction.total} CHF, Paid: ${transaction.paid} CHF, Change: ${transaction.change} CHF`,
+        value3: transaction.date
     };
 
     console.log('Sending to IFTTT:', payload);
