@@ -99,9 +99,9 @@ async function logTransactionToIFTTT(transaction) {
     const key = 'x5Jhxl9evk6SPmKe8rW5S'; // Replace with your IFTTT Webhook key
 
     const payload = {
-        value1: `Items: ${transaction.items}`,
-        value2: `Total: ${transaction.total} CHF, Paid: ${transaction.paid} CHF, Change: ${transaction.change} CHF`,
-        value3: `Date: ${transaction.date}`
+        value1: transaction.items,
+        value2: transaction.total,
+        value3: transaction.date
     };
 
     console.log('Sending to IFTTT:', payload);
