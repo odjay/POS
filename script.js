@@ -94,16 +94,15 @@ function logTransactionToIFTTT(transaction) {
 
 // Put the key from IFFTTT https://maker.ifttt.com/trigger/POS/json/with/key/
    // const key = ''; // Replace with your IFTTT Webhook key
-     const key = 'https://hkdk.events/f7b331ddu5ctaa'; // Replace with your IFTTT Webhook key
+   
     const payload = {
         value1: transaction.items,
         value2: `Total: ${transaction.total} CHF`, // Only send total
         value3: transaction.date
     };
 
-  //  const jsonpUrl = `https://maker.ifttt.com/trigger/${event}/with/key/${key}?value1=${encodeURIComponent(payload.value1)}&value2=${encodeURIComponent(payload.value2)}&value3=${encodeURIComponent(payload.value3)}&callback=iftttCallback`;
-  const jsonpUrl = `https://hkdk.events/f7b331ddu5ctaa?value1=${encodeURIComponent(payload.value1)}&value2=${encodeURIComponent(payload.value2)}&value3=${encodeURIComponent(payload.value3)}&callback=iftttCallback`;
-
+   const jsonpUrl = `https://maker.ifttt.com/trigger/${event}/with/key/${key}?value1=${encodeURIComponent(payload.value1)}&value2=${encodeURIComponent(payload.value2)}&value3=${encodeURIComponent(payload.value3)}&callback=iftttCallback`;
+  
     const script = document.createElement('script');
     script.src = jsonpUrl;
     document.body.appendChild(script);
